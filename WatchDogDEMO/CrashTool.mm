@@ -362,11 +362,7 @@ static int32_t g_main_thread_id = 0;
 
 // 线程锁
 static pthread_mutex_t g_watchdog_lock = PTHREAD_MUTEX_INITIALIZER;
-static uint64_t g_last_feed_time = 0;
-
-
-// 临终遗言
-static string g_last_note;
+static uint64_t g_last_time = 0;
 
 
 // 自启动以来的毫秒数
@@ -774,19 +770,19 @@ static void GJiOSCheckWatchDog()
 
     // 获取上一次主线程的时间
     pthread_mutex_lock(&g_watchdog_lock);
-    uint64_t last_feed_time = g_last_feed_time;
+    uint64_t last_time = g_last_time;
     pthread_mutex_unlock(&g_watchdog_lock);
     
     // 说明已经开始警告了
-    if (last_feed_time && (curr > last_feed_time + WATCHDOG_ALARM))
+    if (last_time && (curr > last_time + WATCHDOG_ALARM))
     {
-        GJiOSAnrAlarmHandler(curr - last_feed_time);
+        GJiOSAnrAlarmHandler(curr - last_time);
     }
 
     // 主线程更新一次时间
     dispatch_async(dispatch_get_main_queue(), ^{
         pthread_mutex_lock(&g_watchdog_lock);
-        g_last_feed_time = GJiOSGetUpTime();
+        g_last_time = GJiOSGetUpTime();
         pthread_mutex_unlock(&g_watchdog_lock);
     });
 }
