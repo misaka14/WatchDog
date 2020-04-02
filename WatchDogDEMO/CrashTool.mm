@@ -517,7 +517,7 @@ uint32_t GJSysGetPageSize()
     // After researching on stackoverflow.com and opensource.apple.com, I found
     // that there are two global variables holding page size which are vm_kernel_page_size
     // and vm_page_size.
-    // getpagesize() & sysctl(HW_PAGESIZE ) returns vm_page_size which is 16K on iOS 64bit
+    // getpagesize() & sysctl(PAGESIZE ) returns vm_page_size which is 16K on iOS 64bit
     // host_page_size returns vm_kernel_page_size which is 4KB on iOS 64bit
     // page_size = (UINT32)getpagesize();
 
@@ -542,18 +542,12 @@ uint32_t GJSysGetPageSize()
 int32_t GJSysGetMemInfo(GJ_MEM_INFO_S *mem_info)
 {
 
-    // Get total memory
-    // 2017-05-12 huxiaoxiang Fix negative mem got on iPhone7Plus
-    // int mem = 0;
     uint32_t mem = 0;
-    int mib[2] = {CTL_HW, HW_USERMEM}; // HW_USERMEM usable by user program, HW_PHYSMEM is also an
-                                       // option
+    int mib[2] = {CTL_HW, HW_USERMEM};
     size_t length = sizeof(mem);
     sysctl(mib, 2, &mem, &length, NULL, 0);
     mem_info->total_phy = mem >> 10;
 
-    // Get free memory
-    // DTS2017101006468 host_statistics64接口在iOS11下阻塞0~3秒不等，换成host_statistics接口可以规避
     vm_statistics_data_t vmstat;
     mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
 
