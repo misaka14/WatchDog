@@ -503,7 +503,6 @@ uint32_t GJSysGetPageSize()
     }
 
 #ifdef __APPLE__
-    // 2016-01-29 huxiaoxiang 00160924
     // getpagesize() returns 16KB on iOS 64bit, but it's not true.
     // If you use that value for host_statistics with HOST_VM_INFO, you'll
     // see the free memory may be greater than total physical memory.
@@ -521,7 +520,7 @@ uint32_t GJSysGetPageSize()
     // host_page_size returns vm_kernel_page_size which is 4KB on iOS 64bit
     // page_size = (UINT32)getpagesize();
 
-    // Update 2017-05-12 huxiaoxiang 00160924
+    
     // host_page_size also returns 16KB on iPhone7 Plus with iOS 10.0.3 which is NOT a bug!
 
     // https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
